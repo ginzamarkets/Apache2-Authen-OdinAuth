@@ -1,0 +1,30 @@
+# Sample config for Apache2::Authen::OdinAuth
+
+permissions:
+  # URLs no auth
+  - url: !!perl/regexp ^localhost
+    who: all
+  # Require a role
+  - url: !!perl/regexp ^dev\.myapp\.com
+    who: role:admin
+  # Require username
+  - url: !!perl/regexp ^debug\.myapp\.com/
+    who: cal
+  # A list is fine too
+  - url: !!perl/regexp ^debug2\.myapp\.com/
+    who:
+      - role:devel
+      - cal
+      - myles
+  # Allow any authenticated user
+  - url: !!perl/regexp ^debug3\.myapp\.com/
+    who: authed
+
+
+# log_file: /tmp/odin.log
+secret: ****************
+reload_timeout: 600
+need_auth_url: http://example.com/?NA
+invalid_cookie_url: http://example.com/?CIU
+not_on_list_url: http://example.com/?NOL
+cookie: oa
