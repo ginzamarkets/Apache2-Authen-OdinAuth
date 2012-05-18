@@ -6,47 +6,79 @@ use warnings;
 
 =head1 NAME
 
-Crypt::OdinAuth - The great new Crypt::OdinAuth!
+Crypt::OdinAuth - Calculations for OdinAuth SSO system
 
 =head1 VERSION
 
-Version 0.01
+Version 0.1
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.1';
 
+use Digest::SHA1 qw(sha1_hex);
+
+use constant OLD_COOKIE => 24*60*60; # cookie older than 24h is discarded
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+This module exports functions for calculating and verifying signed
+cookies for OdinAuth SSO Apache handler.
 
     use Crypt::OdinAuth;
 
-    my $foo = Crypt::OdinAuth->new();
-    ...
+    Crypt::OdinAuth::hmac_for('secret', 'login_name', 'role1,role2,role3', 1337357387, 'netcat')
+    #=> '349b7135f43bd4c0111564960e7d9d583dde0c5c'
 
-=head1 EXPORT
+    Crypt::OdinAuth::cookie_for('secret', 'login_name', 'role1,role2,role3', 'netcat')
+    #=> 'login_name-role1,role2,role3-1337357638-7ec415a6816c8e9dab7b788e1262769ef80af7d8'
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=head1 SUBROUTINES
 
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
+=head2 hmac_for(secret, user, roles, timestamp, user_agent)
 
 =cut
 
-sub function1 {
+sub hmac_for ($$$$$) {
+    my ( $secret, $user, $roles, $ts, $ua ) = @_;
+
+    if ($ua =~ /AppleWebKit/) {
+        $ua = "StupidAppleWebkitHacksGRRR";
+    }
+    $ua =~ s/ FirePHP\/\d+\.\d+//;
+
+    return sha1_hex( "$secret$user-$roles-$ts-$ua" );
 }
 
-=head2 function2
+=head2 cookie_for(secret, user, roles, user_agent)
 
 =cut
 
-sub function2 {
+sub cookie_for {
+    my ( $secret, $user, $roles, $ua, $ts ) = @_;
+    $ts = time() unless $ts;
+    my $hmac = hmac_for($secret, $user, $roles, $ts, $ua);
+    return "$user-$roles-$ts-$hmac";
+}
+
+=head2 check_cookie(secret, cookie, user_agent)
+
+=cut
+
+sub check_cookie ($$$) {
+    my ( $secret, $cookie, $ua ) = @_;
+    my ( $user, $roles, $ts, $hmac ) = split '-', $cookie, 4;
+
+    die "Invalid signature\n"
+        if ( $hmac ne hmac_for($secret, $user, $roles, $ts, $ua) );
+
+    die "Cookie is old\n"
+        if ( $ts < time() - OLD_COOKIE );
+
+    die "Cookie is in future\n"
+        if ( $ts > time() + 5*60 );
+
+    return $user, $roles;
 }
 
 =head1 AUTHOR
