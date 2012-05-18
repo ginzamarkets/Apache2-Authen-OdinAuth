@@ -1,3 +1,9 @@
+*.bak
+*.old
+*.tmp
+*.rej
+*.orig
+*~
 blib*
 Makefile
 Makefile.old
