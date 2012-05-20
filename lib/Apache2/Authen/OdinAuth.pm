@@ -20,12 +20,12 @@ use Crypt::OdinAuth;
 
 use Apache2::Log;
 use Apache2::RequestRec ();
+use Apache2::RequestUtil;
 use Apache2::ServerUtil ();
 use Apache2::Connection;
 use Apache2::Const -compile => qw(OK REDIRECT REMOTE_NOLOOKUP FORBIDDEN);
 use APR::Table;
 use YAML::XS;
-use File::Slurp;
 
 use Sys::Hostname;
 
@@ -51,7 +51,7 @@ use constant RELOAD_TIMEOUT => 10*60; # reload config every 10 minutes
 
   sub config {
     if ( time() - $last_reload_time > RELOAD_TIMEOUT ) {
-      $config = YAML::XS::Load(scalar File::Slurp::read_file($config_file));
+      $config = YAML::XS::LoadFile($config_file);
     }
     $config;
   }
@@ -179,7 +179,7 @@ sub handler {
     return &redir($r, $url, config->{need_auth_url});
   }
 
-  if (!$cookie_is_invalid) {
+  if ($cookie_is_invalid) {
     return &redir($r, $url, config->{invalid_cookie_url}, $cookie_is_invalid);
   }
 

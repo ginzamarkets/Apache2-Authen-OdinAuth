@@ -17,7 +17,6 @@ my $builder = Module::Build->new(
         'perl' => 5.006,
         'Digest::SHA1' => 0,
         'YAML::XS' => 0,
-        'File::Slurp' => 0,
     },
     add_to_cleanup      => [ 'Apache2-Authen-OdinAuth-*' ],
     create_makefile_pl => 'traditional',
