@@ -159,7 +159,7 @@ sub handler {
   $r->log->debug($log);
 
   if ( $cookie_is_invalid ) {
-      $r->log->warn("Invalid cookie for $user: $cookie_is_invalid");
+      $r->log->warn("Invalid cookie for $cookie_user: $cookie_is_invalid");
   }
 
   #########################################################
