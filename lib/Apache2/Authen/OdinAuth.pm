@@ -158,6 +158,10 @@ sub handler {
 
   $r->log->debug($log);
 
+  if ( $cookie_is_invalid ) {
+      $r->log->warn("Invalid cookie for $user: $cookie_is_invalid");
+  }
+
   #########################################################
   #
   # 3) exit now if we got an 'all'
