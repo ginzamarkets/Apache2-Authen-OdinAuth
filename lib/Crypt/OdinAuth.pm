@@ -67,6 +67,7 @@ sub cookie_for {
 
 sub check_cookie ($$$) {
     my ( $secret, $cookie, $ua ) = @_;
+    $cookie =~ s/^\s+|\s+$//g;
     my ( $user, $roles, $ts, $hmac ) = split '-', $cookie, 4;
 
     die "Invalid signature\n"

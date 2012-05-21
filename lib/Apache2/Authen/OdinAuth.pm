@@ -256,7 +256,7 @@ sub redir {
 
 
 sub parse_cookie_jar {
-  ( my ($jar) = @_ ) =~ s/^\s+|\s+$//g;
+  my ($jar) = @_;
 
   return {} unless defined $jar;
 
