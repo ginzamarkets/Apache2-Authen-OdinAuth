@@ -1,0 +1,53 @@
+{
+   "abstract" : "A cookie-based single sign-on system for Apache",
+   "author" : [
+      "Maciej Pasternacki <maciej@pasternacki.net>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4002, CPAN::Meta::Converter version 2.112150",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Apache2-Authen-OdinAuth",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::Exception" : 0,
+            "Test::More" : 0
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.40"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Digest::SHA1" : 0,
+            "YAML::XS" : 0,
+            "perl" : "5.006"
+         }
+      }
+   },
+   "provides" : {
+      "Apache2::Authen::OdinAuth" : {
+         "file" : "lib/Apache2/Authen/OdinAuth.pm",
+         "version" : "0.3"
+      },
+      "Crypt::OdinAuth" : {
+         "file" : "lib/Crypt/OdinAuth.pm",
+         "version" : "0.1"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "0.3"
+}

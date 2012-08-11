@@ -17,6 +17,3 @@ cover_db
 pod2htm*.tmp
 Apache2-Authen-OdinAuth-*
 MYMETA.*
-Makefile.PL
-META.json
-META.yml

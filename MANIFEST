@@ -1,16 +1,18 @@
+Build
 Build.PL
 Changes
 config.yml
 lib/Apache2/Authen/OdinAuth.pm
 lib/Crypt/OdinAuth.pm
+Makefile.PL
 MANIFEST			This list of files
+MANIFEST.bak
 MANIFEST.SKIP
+META.json
+META.yml
 README
 t/00-load.t
 t/crypto.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
-Makefile.PL
-META.yml
-META.json

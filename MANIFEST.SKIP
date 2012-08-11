@@ -1,2 +1,5 @@
 ^\.git
 ~$
+^MYMETA\.yml$
+^MYMETA\.json$
+^_build
