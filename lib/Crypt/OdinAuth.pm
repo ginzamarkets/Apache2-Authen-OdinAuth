@@ -6,7 +6,7 @@ use warnings;
 
 =head1 NAME
 
-Crypt::OdinAuth - Calculations for OdinAuth SSO system
+Crypt::OdinAuth - Cryptographic calculations for the OdinAuth SSO system
 
 =head1 VERSION
 

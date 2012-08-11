@@ -1,9 +1,15 @@
-Apache2-Authen-OdinAuth -- GodAuth with a hammer
+Apache2-Authen-OdinAuth -- A cookie-based single sign-on system for Apache
 
 This is a rewrite of GodAuth mod_perl single sign-on script
 (http://github.com/exflickr/GodAuth), packaged as a proper CPAN
 module, with easier setup, and a Perl Dancer authorizer webapp
 App::OdinAuthorizer.
+
+The companion App::OdinAuthorizer Web application can be found at
+https://github.com/ginzamarkets/App-OdinAuthorizer, and more details
+about whole setup at https://ginzamarkets.github.com/odin-auth/. This
+module itself is being developed at
+https://github.com/ginzamarkets/Apache2-Authen-OdinAuth/.
 
 INSTALLATION
 

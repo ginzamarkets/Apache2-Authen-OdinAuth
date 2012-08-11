@@ -6,15 +6,15 @@ use warnings;
 
 =head1 NAME
 
-Apache2::Authen::OdinAuth - GodAuth with the hammer!
+Apache2::Authen::OdinAuth - A cookie-based single sign-on module for Apache.
 
 =head1 VERSION
 
-Version 0.1
+Version 0.3
 
 =cut
 
-our $VERSION = '0.1';
+our $VERSION = '0.3';
 
 use Crypt::OdinAuth;
 
@@ -31,14 +31,66 @@ use Sys::Hostname;
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+This module defines an Apache handler for the Odin Authenticator
+single sign-on system. The system is based on the GodAuth script,
+available at L<http://github.com/exflickr/GodAuth/>.
 
-Perhaps a little code snippet.
+=head1 USAGE
 
-    use Apache2::Authen::OdinAuth;
+To make Apache use the handler for authentication, enable mod_perl and
+add following directives in apache2.conf:
 
-    my $foo = Apache2::Authen::OdinAuth->new();
-    ...
+    PerlSetVar odinauth_config /path/to/odin_auth.yml
+    PerlFixupHandler Apache2::Authen::OdinAuth
+
+The C<PerlSetVar> statement needs to be global; the
+C<PerlFixupHandler> statement can be global or occur in a
+C<VirtualHost>, C<Directory>, or C<Location> section.
+
+=head2 YAML CONFIG
+
+The handler reads (and automatically reloads if it's older than
+C<reload_timeout> seconds) an additional YAML config file. It sets
+configures the shared secret, cookie name, authorizer app URL, and
+permissions (which are unfortunately regexp-based).
+
+A sample configuration file looks like this:
+
+    # Sample config for Apache2::Authen::OdinAuth
+    
+    permissions:
+      # URLs no auth
+      - url: !!perl/regexp ^localhost
+        who: all
+      # Require a role
+      - url: !!perl/regexp ^dev\.myapp\.com
+        who: role:admin
+      # Require username
+      - url: !!perl/regexp ^debug\.myapp\.com/
+        who: cal
+      # A list is fine too
+      - url: !!perl/regexp ^debug2\.myapp\.com/
+        who:
+          - role:devel
+          - cal
+          - myles
+      # Allow any authenticated user
+      - url: !!perl/regexp ^debug3\.myapp\.com/
+        who: authed
+    
+    
+    # log_file: /tmp/odin.log
+    secret: ****************
+    reload_timeout: 600
+    need_auth_url: http://example.com/?NA
+    invalid_cookie_url: http://example.com/?CIU
+    not_on_list_url: http://example.com/?NOL
+    cookie: oa
+
+NOTE: The config is better than original GodAuth configuration, but
+will probably need to be refactored; it would be best to make it live
+inside Apache's configuration. I'm still not sure how to make it
+happen in mod_perl.
 
 =cut
 
