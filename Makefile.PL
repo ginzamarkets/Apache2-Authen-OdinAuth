@@ -10,9 +10,10 @@ WriteMakefile
   'VERSION_FROM' => 'lib/Apache2/Authen/OdinAuth.pm',
   'PREREQ_PM' => {
                    'Test::More' => 0,
+                   'Digest::HMAC' => 0,
                    'Test::Exception' => 0,
-                   'Digest::SHA1' => 0,
-                   'YAML::XS' => 0
+                   'YAML::XS' => 0,
+                   'Digest::SHA256' => 0
                  }
 )
 ;
