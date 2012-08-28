@@ -15,7 +15,8 @@ my $builder = Module::Build->new(
     },
     requires => {
         'perl' => 5.006,
-        'Digest::SHA1' => 0,
+        'Digest::HMAC' => 0,
+        'Digest::SHA256' => 0,
         'YAML::XS' => 0,
     },
     add_to_cleanup      => [ 'Apache2-Authen-OdinAuth-*' ],

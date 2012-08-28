@@ -3,10 +3,12 @@
 use Test::More tests => 10;
 use Test::Exception;
 
+use MIME::Base64 qw(encode_base64url decode_base64url);
+
 use Crypt::OdinAuth;
 
 use constant EXAMPLE_TIMESTAMP => 1337357387;
-use constant EXAMPLE_HMAC => '349b7135f43bd4c0111564960e7d9d583dde0c5c';
+use constant EXAMPLE_HMAC => '0803ddb6d45144663a92255ace8bbe0b3811acae7ff675d7b708d2cc0c99a2a2';
 
 is( EXAMPLE_HMAC, Crypt::OdinAuth::hmac_for(
   'secret', 'login_name', 'role1,role2,role3', EXAMPLE_TIMESTAMP, 'netcat'),
@@ -16,12 +18,14 @@ is( EXAMPLE_HMAC, Crypt::OdinAuth::hmac_for(
 my $tm = time();
 my $hm = Crypt::OdinAuth::hmac_for( 'secret', 'login_name', 'role1,role2,role3',
                                     $tm, 'netcat');
+my $b64_u = encode_base64url('login_name');
+my $b64_r = encode_base64url('role1,role2,role3');
 
-is( "login_name-role1,role2,role3-$tm-$hm",
+is( "$b64_u,$b64_r,$tm,$hm",
     Crypt::OdinAuth::cookie_for('secret', 'login_name', 'role1,role2,role3', 'netcat'),
     'cookie_for without timestamp');
 
-is( "login_name-role1,role2,role3-".EXAMPLE_TIMESTAMP."-".EXAMPLE_HMAC,
+is( "$b64_u,$b64_r,".EXAMPLE_TIMESTAMP.",".EXAMPLE_HMAC,
     Crypt::OdinAuth::cookie_for('secret', 'login_name', 'role1,role2,role3', 'netcat', EXAMPLE_TIMESTAMP),
     'cookie_for with timestamp');
 

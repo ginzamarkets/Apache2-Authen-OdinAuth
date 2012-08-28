@@ -10,13 +10,16 @@ Crypt::OdinAuth - Cryptographic calculations for the OdinAuth SSO system
 
 =head1 VERSION
 
-Version 0.1
+Version 0.2
 
 =cut
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 
-use Digest::SHA1 qw(sha1_hex);
+use Digest;
+use Digest::HMAC;
+use Digest::SHA256;
+use MIME::Base64 qw(encode_base64url decode_base64url);
 
 use constant OLD_COOKIE => 24*60*60; # cookie older than 24h is discarded
 
@@ -38,16 +41,21 @@ cookies for OdinAuth SSO Apache handler.
 =head2 hmac_for(secret, user, roles, timestamp, user_agent)
 
 =cut
-
 sub hmac_for ($$$$$) {
     my ( $secret, $user, $roles, $ts, $ua ) = @_;
+    my $hmac = Digest::HMAC->new($secret, Digest->new("SHA-256"));
 
     if ($ua =~ /AppleWebKit/) {
         $ua = "StupidAppleWebkitHacksGRRR";
     }
     $ua =~ s/ FirePHP\/\d+\.\d+//;
 
-    return sha1_hex( "$secret$user-$roles-$ts-$ua" );
+    $hmac->add(join(',',
+                    encode_base64url($user),
+                    encode_base64url($roles),
+                    $ts,
+                    encode_base64url($ua)));
+    return $hmac->hexdigest;
 }
 
 =head2 cookie_for(secret, user, roles, user_agent)
@@ -56,9 +64,14 @@ sub hmac_for ($$$$$) {
 
 sub cookie_for {
     my ( $secret, $user, $roles, $ua, $ts ) = @_;
-    $ts = time() unless $ts;
+    $ts = time() unless defined($ts);
+
     my $hmac = hmac_for($secret, $user, $roles, $ts, $ua);
-    return "$user-$roles-$ts-$hmac";
+    return join(',',
+                encode_base64url($user),
+                encode_base64url($roles),
+                $ts,
+                $hmac);
 }
 
 =head2 check_cookie(secret, cookie, user_agent)
@@ -67,11 +80,26 @@ sub cookie_for {
 
 sub check_cookie ($$$) {
     my ( $secret, $cookie, $ua ) = @_;
-    $cookie =~ s/^\s+|\s+$//g;
-    my ( $user, $roles, $ts, $hmac ) = split '-', $cookie, 4;
+
+    $cookie =~ /^\s*([a-zA-Z0-9_-]+),([a-zA-Z0-9_-]+),(\d+),([0-9a-f]+)\s*$/
+      or die "Wrong cookie format\n";
+
+    my $user = decode_base64url($1);
+    my $roles = decode_base64url($2);
+    my $ts = $3;
+    my $hmac = $4;
+
+    # Use double hmac to prevent timing attacks
+    # http://codahale.com/a-lesson-in-timing-attacks/
+    # http://www.isecpartners.com/blog/2011/2/18/double-hmac-verification.html
+    my $hmac_received   = Digest::HMAC->new($secret, Digest->new("SHA-256"));
+    my $hmac_calculated = Digest::HMAC->new($secret, Digest->new("SHA-256"));
+
+    $hmac_received->add($hmac);
+    $hmac_calculated->add(hmac_for($secret, $user, $roles, $ts, $ua));
 
     die "Invalid signature\n"
-        if ( $hmac ne hmac_for($secret, $user, $roles, $ts, $ua) );
+      if ( $hmac_received->digest ne $hmac_calculated->digest );
 
     die "Cookie is old\n"
         if ( $ts < time() - OLD_COOKIE );
