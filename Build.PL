@@ -18,6 +18,7 @@ my $builder = Module::Build->new(
         'Digest::HMAC' => 0,
         'Digest::SHA256' => 0,
         'YAML::XS' => 0,
+        'MIME::Base64' => 3.13,
     },
     add_to_cleanup      => [ 'Apache2-Authen-OdinAuth-*' ],
     create_makefile_pl => 'traditional',
