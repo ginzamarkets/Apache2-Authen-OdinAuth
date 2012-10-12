@@ -4,7 +4,7 @@
       "Maciej Pasternacki <maciej@pasternacki.net>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4002, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.112150",
    "license" : [
       "perl_5"
    ],
@@ -29,6 +29,7 @@
          "requires" : {
             "Digest::HMAC" : 0,
             "Digest::SHA256" : 0,
+            "MIME::Base64" : "3.13",
             "YAML::XS" : 0,
             "perl" : "5.006"
          }
@@ -37,7 +38,7 @@
    "provides" : {
       "Apache2::Authen::OdinAuth" : {
          "file" : "lib/Apache2/Authen/OdinAuth.pm",
-         "version" : "0.4"
+         "version" : "0.5"
       },
       "Crypt::OdinAuth" : {
          "file" : "lib/Crypt/OdinAuth.pm",
@@ -50,5 +51,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.4"
+   "version" : "0.5"
 }
