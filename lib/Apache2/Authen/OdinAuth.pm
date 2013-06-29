@@ -296,13 +296,13 @@ sub handler {
 
 
 sub redir {
-  my ($r, $ref, $url, $reason) = @_;
+  my ($r, $ref, $target, $reason) = @_;
 
   $ref = &urlencode('http://'.$ref);
-  $url .= ($url =~ /\?/) ? "&ref=$ref" : "?ref=$ref";
-  $url .= '&reason='.urlencode($reason) if $reason;
+  $target .= ($target =~ /\?/) ? "&ref=$ref" : "?ref=$ref";
+  $target .= '&reason='.urlencode($reason) if $reason;
 
-  $r->headers_out->set('Location', $url);
+  $r->headers_out->set('Location', $target);
   return Apache2::Const::REDIRECT;
 }
 
