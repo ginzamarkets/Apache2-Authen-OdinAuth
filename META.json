@@ -38,7 +38,7 @@
    "provides" : {
       "Apache2::Authen::OdinAuth" : {
          "file" : "lib/Apache2/Authen/OdinAuth.pm",
-         "version" : "0.5"
+         "version" : "0.6"
       },
       "Crypt::OdinAuth" : {
          "file" : "lib/Crypt/OdinAuth.pm",
@@ -51,5 +51,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.5"
+   "version" : "0.6"
 }

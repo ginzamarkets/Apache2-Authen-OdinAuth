@@ -17,7 +17,7 @@ name: Apache2-Authen-OdinAuth
 provides:
   Apache2::Authen::OdinAuth:
     file: lib/Apache2/Authen/OdinAuth.pm
-    version: 0.5
+    version: 0.6
   Crypt::OdinAuth:
     file: lib/Crypt/OdinAuth.pm
     version: 0.2
@@ -29,4 +29,4 @@ requires:
   perl: 5.006
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.5
+version: 0.6
